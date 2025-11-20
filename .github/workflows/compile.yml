@@ -1,0 +1,31 @@
+name: Compile MiSTer Core
+
+on:
+  workflow_dispatch:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Compile Core
+        run: |
+          echo "Starting Docker compilation using raetro/quartus:17.0..."
+          
+          PROJECT=$(find . -maxdepth 1 -name "*.qpf" | head -n 1)
+          if [ -z "$PROJECT" ]; then
+            echo "::error::No .qpf file found! Make sure the project file exists."
+            exit 1
+          fi
+          echo "Compiling project: $PROJECT"
+          
+          docker run -v "$(pwd)":/build raetro/quartus:17.0 quartus_sh --flow compile /build/"$PROJECT"
+
+      - name: Upload .rbf Release
+        uses: actions/upload-artifact@v4
+        with:
+          name: Compiled-Core
+          path: output_files/*.rbf
