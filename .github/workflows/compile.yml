@@ -37,7 +37,8 @@ jobs:
             exit 1
           fi
           
-          mv "$COMPILED_RBF" "output_files/$FINAL_RBF_NAME"
+          # fix permission
+          sudo mv "$COMPILED_RBF" "output_files/$FINAL_RBF_NAME"
           echo "Renamed RBF to: $FINAL_RBF_NAME"
           
           echo "FINAL_RBF_PATH=output_files/$FINAL_RBF_NAME" >> $GITHUB_ENV
